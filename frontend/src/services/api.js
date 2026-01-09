@@ -1,6 +1,3 @@
-// ============================================
-// FILE: frontend/src/services/api.js
-// ============================================
 import axios from 'axios';
 
 const api = axios.create({
@@ -33,13 +30,10 @@ api.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem('refreshToken');
-        const { data } = await axios.post(
-          `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth/refresh-token`,
-          { refreshToken }
-        );
+        const { data } = await api.post('/auth/refresh-token', { refreshToken });
 
         localStorage.setItem('accessToken', data.accessToken);
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        api.defaults.headers.Authorization = `Bearer ${data.accessToken}`;
 
         return api(originalRequest);
       } catch (err) {
